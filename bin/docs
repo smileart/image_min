@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+BASEDIR=$(dirname $0)
+SELF_LOCATION="${PWD}/${BASEDIR}"
+
+yard &&
+cp -r "$SELF_LOCATION/../img" "$SELF_LOCATION/../doc" &&
+open "$SELF_LOCATION/../doc/index.html"

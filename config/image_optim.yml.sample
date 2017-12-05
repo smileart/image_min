@@ -1,0 +1,69 @@
+# ======== GLOBAL SETTINGS ======== :: https://github.com/toy/image_optim
+nice: 20                     # Nice level, priority of all used tools with higher value meaning lower priority, in range -20..19, negative values can be set only if run by root user (defaults to 10)
+pngout: false                # disable
+optipng:
+  level: 5
+verbose: false               # Verbose output (defaults to false)
+pack: true                   # Require image_optim_pack or disable it, by default image_optim_pack will be used if available, will turn on :skip-missing-workers unless explicitly disabled (defaults to nil)
+skip_missing_workers: false  # Skip workers with missing or problematic binaries (defaults to false)
+allow_lossy: false           # Allow lossy workers and optimizations (defaults to false)
+# cache_worker_digests:      # Also cache worker digests along with original file digest and worker options: updating workers invalidates cache
+# threads: 8                 # Number of threads or disable (defaults to number of processors)
+# cache_dir:                 # Configure cache directory
+
+# ======== ADVPNG ========
+advpng:
+  level: 4                   #  Compression level: 0 - don't compress, 1 - fast, 2 - normal, 3 - extra, 4 - extreme (defaults to 4)
+
+# ======== GIFSICLE ========
+gifsicle:
+  # interlace:               # Interlace: true - interlace on, false - interlace off, nil - as is in original image (defaults to running two instances, one with interlace off and one with on)
+  level: 3                   # Compression level: 1 - light and fast, 2 - normal, 3 - heavy (slower) (defaults to 3)
+  careful: false             # Avoid bugs with some software (defaults to false)
+
+# ======== JPEGOPTIM ========
+jpegoptim:
+  allow_lossy: false         # Allow limiting maximum quality (defaults to false)
+  strip: :all                # List of extra markers to strip: :comments, :exif, :iptc, :icc or :all (defaults to :all)
+  max_quality: 100           # Maximum image quality factor 0..100, ignored in default/lossless mode (defaults to 100)
+
+# ======== JPEGRECOMPRESS ========
+jpegrecompress:
+  allow_lossy: false         # Allow worker, it is always lossy (defaults to false)
+  quality: 3                 # JPEG quality preset: 0 - low, 1 - medium, 2 - high, 3 - veryhigh (defaults to 3)
+
+# ======== JPEGTRAN ========
+jpegtran:
+  copy_chunks: false         # Copy all chunks (defaults to false)
+  progressive: true          # Create progressive JPEG file (defaults to true)
+  jpegrescan: false          # Use jpegtran through jpegrescan, ignore progressive option (defaults to false)
+
+# ======== OPTIPNG ========
+optipng:
+  level: 6                   # Optimization level preset: 0 is least, 7 is best (defaults to 6)
+  interlace: false           # Interlace: true - interlace on, false - interlace off, nil - as is in original image (defaults to false)
+  strip: true                # Remove all auxiliary chunks (defaults to true)
+
+# ======== PNGCRUSH ========
+pngcrush:
+  chunks: :alla              # List of chunks to remove or :alla - all except tRNS/transparency or :allb - all except tRNS and gAMA/gamma (defaults to :alla)
+  fix: false                 # otherwise fatal conditions such as bad CRCs (defaults to false)
+  brute: false               # Brute force try all methods, very time-consuming and generally not worthwhile (defaults to false)
+  blacken: true              # Blacken fully transparent pixels (defaults to true)
+
+# ======== PNGOUT ========
+pngout:
+  copy_chunks: false         # Copy optional chunks (defaults to false)
+  strategy: 0                # Strategy: 0 - xtreme, 1 - intense, 2 - longest Match, 3 - huffman Only, 4 - uncompressed (defaults to 0)
+
+# ======== PNGOUT ========
+pngquant:
+  allow_lossy: false         # Allow quality option (defaults to false)
+  speed: 3                   # speed/quality trade-off: 1 - slow, 3 - default, 11 - fast & rough (defaults to 3)
+  # max_colors: 256          # WARNING!!! Seems to be depricated or broken!!! — Maximum number of colors to use (defaults to 256)
+  # quality: 100..100          # min..max - don't save below min, use less colors below max (both in range 0..100; in yaml - !ruby/range 0..100), ignored in default/lossless mode (defaults to 100..100, 0..100 in lossy mode)
+
+# ======== SVGO ========
+svgo:
+  disable_plugins: []        # List of plugins to disable (defaults to [])
+  enable_plugins: []         # List of plugins to enable (defaults to [])

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+BASEDIR=$(dirname $0)
+SELF_LOCATION="${PWD}/${BASEDIR}"
+
+green() { echo "$(tput setaf 2)$*$(tput setaf 9)"; }
+
+last_operation() {
+    echo '==================================================';
+    green '                                         Done! ✔︎'
+}
+
+function ask_yes_or_not() {
+  default=n
+  echo
+  read -p "$1? (yN)" -n 1 -r
+  REPLY="${REPLY:-$default}"
+
+  while (true)
+  do
+    if [[ ! $REPLY == @(Y|y|N|n|yes|no) ]]; then
+      echo
+      read -p "$1? (yN)" -n 1 -r
+      [ -n "$REPLY" ] && name=$REPLY
+      echo
+      echo "Please answer YES or NO with: Y/y/N/n/yes/no"
+    else
+      echo # test
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        return 1
+      else
+        return 0
+      fi
+    fi
+  done
+}
+
+if [ ! -f "$SELF_LOCATION/../config/image_optim.yml" ]; then
+    green 'Initialised ImageOptim configuration ......... ✔︎'
+    cp "$SELF_LOCATION/../config/image_optim.yml.sample" "$SELF_LOCATION/../config/image_optim.yml"
+fi
+
+if [ ! -f "$SELF_LOCATION/../config/rack_attack.rb" ]; then
+    green 'Initialised Rack::Attack configuration ....... ✔︎'
+    cp "$SELF_LOCATION/../config/rack_attack.rb.sample" "$SELF_LOCATION/../config/rack_attack.rb"
+fi
+
+if [ ! -f "$SELF_LOCATION/../config/puma" ]; then
+    green 'Initialised Puma server configuration ........ ✔︎'
+    cp -r "$SELF_LOCATION/../config/puma.sample" "$SELF_LOCATION/../config/puma"
+    mv "$SELF_LOCATION/../config/puma/development.rb.sample" "$SELF_LOCATION/../config/puma/development.rb"
+    mv "$SELF_LOCATION/../config/puma/production.rb.sample" "$SELF_LOCATION/../config/puma/production.rb"
+fi
+
+if [ ! -f "$SELF_LOCATION/../.env" ]; then
+    green 'Dotenv file initialisation ................... ✔︎'
+    cp "$SELF_LOCATION/../dotenv.sample" "$SELF_LOCATION/../.env"
+    last_operation
+fi

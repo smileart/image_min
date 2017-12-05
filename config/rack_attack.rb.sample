@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+# https://github.com/kickstarter/rack-attack
+
+Rack::Attack.safelist('allow from localhost') do |req|
+  req.ip == '127.0.0.1' || req.ip == '::1'
+end
+
+# Rack::Attack.blocklist('test block for 127.0.0.1') do |req|
+#   req.ip == '127.0.0.1' || req.ip == '::1'
+# end
