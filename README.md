@@ -166,6 +166,84 @@ mutant -j 1 --fail-fast -I ./lib/image_compressor.rb -r ./spec/image_compressor_
 >
 > Also it's recommended to test network and concurrent things that might meddle with the results/ports using just one job i.e. `-j 1`, but also remember that it's really time consuming process!
 
+## Docker
+
+When you're just using this service with Docker (non-development purposes), you'd need to pull the image from the [Docker Hub registry](https://hub.docker.com/r/smileart/image_min/):
+
+```sh
+docker image pull smileart/image_min
+```
+
+or run it (and pull automatically):
+
+```sh
+# Exmaple of running ImageMin from Rails project
+docker container run -it -e 'PORT=9292' -e 'RACK_ENV=production' --env-file .env -p 9292:9292 --name image_min --rm -v "$(pwd)/config/image_min":/app/config -v "$(pwd)/public/images":/app/images smileart/image_min
+```
+
+or even better — use it as one of the services in Docker Compose. `docker-compose.yml`:
+
+```yaml
+version: '3'
+
+services:
+  site:
+    build: .
+    image: some-site
+    container_name: some-site
+    volumes:
+      - .:/app
+    tmpfs:
+      - /app/tmp
+      - /app/log
+    ports:
+      - "80:3000"
+    depends_on:
+      - db
+      - redis
+      - imagemin
+    restart: always
+    environment:
+      IMAGE_MIN_HOST: localhost:9292
+      IMAGE_MIN_SECRET_KEY: …
+      IMAGE_MIN_PUBLIC_IV: …
+  db:
+    image: postgres:9.5
+    container_name: site-db
+    environment:
+      POSTGRES_USER: postgres
+    ports:
+      - '5432:5432'
+    restart: always
+    volumes:
+      - data:/var/lib/postgresql/data
+  redis:
+    image: 'redis'
+    container_name: site-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis:/data'
+  imagemin:
+    image: image_min
+    container_name: image-min
+    volumes:
+      - ./config/image_min:/app/config
+      - ./public/images:/app/images
+    ports:
+      - '9292:9292'
+    environment:
+      PLACEHOLDER_IMAGE: ./images/placeholder.jpg
+      IMAGE_OPTIM_CONFIG_PATH: ./config/image_optim.yml
+      SECRET_KEY: …
+      PUBLIC_IV: …
+      SECRET_TOKEN: alicebobalicebobalicebobalice
+      … … …
+volumes:
+	data:
+	redis:
+``` 
+
 ## Testing
 
 In the simplest case you can run tests using:
