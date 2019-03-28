@@ -40,7 +40,7 @@ end
 
 # Light Service Action to decrypt incoming URL
 class DecryptsUrlAction
-  extend AppHepler
+  extend AppHelper
   extend LightService::Action
 
   expects  :encrypted_uri
@@ -67,7 +67,7 @@ end
 
 # Light Service Action to validate decrypted original image URL
 class ValidatesUrlAction
-  extend AppHepler
+  extend AppHelper
   extend LightService::Action
 
   expects  :original_uri
@@ -105,7 +105,7 @@ end
 
 # Light Service Action to compress image \w some stats
 class CompressesImageAction
-  extend AppHepler
+  extend AppHelper
   extend LightService::Action
 
   expects :original_uri

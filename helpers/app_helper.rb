@@ -5,7 +5,19 @@ require 'invisible_logger'
 require 'rotation_hash'
 
 # Module to implement App helpers
-module AppHepler
+module AppHelper
+  # A teensy-weensy image to server as a placeholder on wrong config
+  UMBRELLA = <<~UMBRELLA.gsub("\n", '')
+    89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000000017352
+    474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec300000ec3
+    01c76fa864000000ab49444154384fd5d0b10ec1501480e13b9018259e007d0bdd7901561e8445
+    0c120f6328893e808e1633426b30773090f09fdb2b9a54a38d48f8932fa7e726b769aabeddc6cc
+    cc15d1838b136e662ed04501a9d5b0c6126dd45132b3030f2b5491a8823d867a4b6f842dca7a8b
+    3581133dbe6d8671f4f86c8723424c61618eb399f13d40e2e75e31807c9a4cf9798fbdff62bf20
+    5372f1a3fef4053e1ab0719083bcb5201745530e7e39a5ee696028ca8eba93460000000049454e
+    44ae426082
+  UMBRELLA
+
   # Redefined Roda initialiser
   def initialize(*args)
     # Let Roda do its thing
@@ -21,6 +33,13 @@ module AppHepler
       "../#{Config.placeholder_image}",
       File.dirname(__FILE__)
     )
+
+    # serve an UMBRELLA wita a bit of binary magic
+    request.halt(200, response.headers({
+      'Content-Type'   => 'image/png',
+      'Cache-Control'  => 'no-cache, no-store, must-revalidate',
+      'Content-Length' => UMBRELLA.length
+    }), UMBRELLA.scan(/../).map(&:hex).pack("c*")) unless File.exist?(@placeholder_img_path)
 
     @placeholder_img_type = File.extname(Config.placeholder_image).tr('.', '')
 

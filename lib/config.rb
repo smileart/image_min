@@ -21,7 +21,7 @@ Config = Env::Vars.new do
 
   # App Config
   optional  :env_name, :string, '<NONE>'
-  optional  :placeholder_image, :string, './img/placeholder.jpg'
+  optional  :placeholder_image, :string, './img/placeholder.jpeg'
   optional  :image_optim_config_path, :string, './config/image_optim.yml'
   optional  :memoisation_limit, :int, 10_000
   optional  :client_cache_ttl, :int, 4
@@ -56,9 +56,9 @@ Config = Env::Vars.new do
     image_optim = ImageOptim.new(config_paths: image_optim_config_path, pngout: false, svgo: false)
 
     ImageCompressor.new(
-      image_optim:         image_optim,
+      image_optim: image_optim,
       compression_timeout: compression_timeout,
-      retrieval_timeout:   retrieval_timeout
+      retrieval_timeout: retrieval_timeout
     )
   end
 end

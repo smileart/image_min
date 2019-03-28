@@ -11,7 +11,6 @@ describe ImageCompressor do
   let(:jpeg_image_url) { 'https://httpbin.org/image/jpeg' }
   let(:svg_image) { 'https://httpbin.org/image/svg' }
   let(:slow_response_url) { 'https://httpbin.org/delay/10' }
-  let(:jpeg_compression_percent) { 3.8299426773069456 }
   let(:not_avail) { 'https://localhost:0000' }
 
   context 'ImageCompressor' do
@@ -29,8 +28,8 @@ describe ImageCompressor do
       expect(stats[:compression_rate]).to be_a(Float)
       expect(stats[:retrieval_time]).to be_a(Integer)
 
-      expect(stats[:compression_rate]).to eq(jpeg_compression_percent)
-      expect(stats[:compression_time]).to be < 100
+      expect(stats[:compression_rate]).to be > 4
+      expect(stats[:compression_time]).to be < 300
       expect(stats[:retrieval_time]).to be < 100
     end
 
@@ -45,7 +44,7 @@ describe ImageCompressor do
       expect(stats[:retrieval_time]).to be_a(Integer)
 
       expect(stats[:compression_rate]).to eq(0.0)
-      expect(stats[:compression_time]).to be < 100
+      expect(stats[:compression_time]).to be < 300
       expect(stats[:retrieval_time]).to be < 100
     end
 

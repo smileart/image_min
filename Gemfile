@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 # Language extensions
 gem 'activesupport'
+gem 'concurrent-ruby-ext'
 
 # Configuration
 gem 'dotenv'

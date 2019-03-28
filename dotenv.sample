@@ -1,5 +1,5 @@
 ENV_NAME=Change your environment name in the .env file!
-PLACEHOLDER_IMAGE=./img/placeholder.png
+PLACEHOLDER_IMAGE=./img/placeholder.jpeg
 IMAGE_OPTIM_CONFIG_PATH=./config/image_optim.yml
 SECRET_KEY=foobarfoobarfoobarfoobarfoobarfo
 PUBLIC_IV=foobarfoobarfoob

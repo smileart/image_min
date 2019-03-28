@@ -79,7 +79,7 @@ describe GeneratesDigest do
     it 'encrypts URL and returns a link' do
       context = LightService::Testing::ContextFactory.make_from(GeneratesDigest)
                                                      .for(described_class)
-                                                     .with(req: fake_request, resp: fake_response)
+                                                     .with(fake_request, fake_response)
 
       result = described_class.execute(context)
       expect(result).to be_success
@@ -90,7 +90,7 @@ describe GeneratesDigest do
     it 'fails with a wrong token provided' do
       context = LightService::Testing::ContextFactory.make_from(GeneratesDigest)
                                                      .for(described_class)
-                                                     .with(req: fake_request_wrong_token, resp: fake_response)
+                                                     .with(fake_request_wrong_token, fake_response)
 
       result = described_class.execute(context)
       expect(result).to be_failure
@@ -101,7 +101,7 @@ describe GeneratesDigest do
     it 'fails with no URI provided' do
       context = LightService::Testing::ContextFactory.make_from(GeneratesDigest)
                                                      .for(described_class)
-                                                     .with(req: fake_request_no_uri, resp: fake_response)
+                                                     .with(fake_request_no_uri, fake_response)
 
       result = described_class.execute(context)
       expect(result).to be_failure

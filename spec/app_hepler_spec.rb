@@ -3,15 +3,15 @@
 require_relative 'spec_helper'
 require_relative '../helpers/app_helper'
 
-describe AppHepler do
+describe AppHelper do
   let(:fake_app) do
-    # extend fake App with the AppHepler
+    # extend fake App with the AppHelper
     class FakeApp
       # make memo readable for test purposes
       attr_reader :memo
       # attr_accessor :logger
 
-      include AppHepler
+      include AppHelper
     end
 
     # fake a request ID (IRL would be assigned by Rack::RequestId)

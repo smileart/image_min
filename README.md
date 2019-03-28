@@ -10,7 +10,7 @@ Based on: [image_optim](https://github.com/toy/image_optim) ruby gem binded with
 
 ## Why
 
-Sometimes you get third party images from APIs, user inputs, etc. Quite often those images could be hosted behind HTTP server (which could be the issue if your site is HTTPS), anyone can see where the image loaded from and, moreover, Google PageSpeed Tools could complain about their (images) sizes and compression possibility.
+Sometimes you get third party images from APIs, user inputs, etc. Often those images could be hosted behind HTTP server (which could be the issue if your site is HTTPS), anyone can see where the image loaded from and, moreover, Google PageSpeed Tools could complain about their (images) sizes and compression possibility.
 
 This service solves all these issues: host it on your subdomain `https://images.example.com` behing HTTPS, encrypt original images sources, compress images on the fly (add some caching in front of it to taste).
 
@@ -23,7 +23,7 @@ This service solves all these issues: host it on your subdomain `https://images.
 Service uses [dotenv](https://github.com/bkeepers/dotenv) gem to configure all the key params:
 
 ```sh
-PLACEHOLDER_IMAGE=./img/placeholder.png        # <<< Default image placeholder relative path
+PLACEHOLDER_IMAGE=./img/placeholder.jpeg       # <<< Default image placeholder relative path
 IMAGE_OPTIM_CONFIG_PATH=./image_optim.yml      # <<< Optimisation Workers config file relative path
 SECRET_KEY=foobarfoobarfoobarfoobarfoobarfo    # <<< Secret key to encrypt URLs with (32B)
 PUBLIC_IV=foobarfoobarfoob                     # <<< No so secret IV (keep static to have symmetric ciphering, 16B)
@@ -46,7 +46,7 @@ LOG_LEVEL=WARN                                 # <<< App log level DEBUG < INFO 
 
 Apart from this config you could and probably should tweak particular optimisation workers used. For all the details check out the original gem's [`Configuration`](https://github.com/toy/image_optim#configuration) section or open heavily commented `image_optim.yml` in the project's `/config` directory.
 
-Actually, you have to set your own `Rack::Attack` and `ImageOptim` configurations anyway. Luckily it's as easy as copying & renaming sample files in the `/config` directoiry. You could leave defaults or set your preferable settings.
+You have to set your own `Rack::Attack` and `ImageOptim` configurations anyway. Luckily it's as easy as copying & renaming sample files in the `/config` directoiry. You could leave defaults or set your preferable settings.
 
 ⚠️ **WARNING**: Config files in the `/config` directory are required but not tracked with git, so before starting it locally, setting it up on staging/production or building Docker images you should create your own config files from samples provided!!!
 
@@ -155,16 +155,16 @@ If you've done everything properly you would receive a link for `localhost:9292`
 
 * To generate and open YARD documentation you could execute something like: `yard && open doc/index.html` or `./bin/docs` to preserve images.
 
-* If you really care about hight quality testing and ever asked yourself who would test the tests (after all they are also code and qiute a lot of it!) then probably, you'd like to run mutation testing:
+* If you care about hight quality testing and ever asked yourself who would test the tests (after all they are also code and qiute a lot of it!) then probably, you'd like to run mutation testing:
 
 ```
 # For exmaple:
 mutant -j 1 --fail-fast -I ./lib/image_compressor.rb -r ./spec/image_compressor_spec.rb --use rspec 'ImageCompressor'
 ```
 
-> **PRO TIP**: keep in mind that quite often there false-negative cases called `Equivalent Mutants`. Don't waste your time trying to fix them in the code or on the tests side.
+> **PRO TIP**: keep in mind that often there are false-negative cases called `Equivalent Mutants`. Don't waste your time trying to fix them in the code or on the tests side.
 >
-> Also it's recommended to test network and concurrent things that might meddle with the results/ports using just one job i.e. `-j 1`, but also remember that it's really time consuming process!
+> Also it's recommended to test network and concurrent things that might meddle with the results/ports using just one job i.e. `-j 1`, but also remember that it's time consuming process!
 
 ## Testing
 
@@ -174,7 +174,7 @@ In the simplest case you can run tests using:
 RACK_ENV=test rspec # run tests using .env.local.test
 ```
 
-In this case it'll automatically run its own server on `http://localhost:9292` and test REST API angainst this built-in server.
+In this case it'll automatically run its own server on `http://localhost:9292` and test REST API against this built-in server.
 
 If you've got an error and the test log says that server logs could contain some details, you'd need to run tests against a real server and check the logs yourself:
 
@@ -186,13 +186,15 @@ foreman start -e ./.env.local.test
 RACK_ENV=test rspec
 ```
 
-Last but not least option is to run tests against interactive (running in foreground) Docker container:
+Last option is to run tests against interactive (running in foreground) Docker container:
 
 ```sh
 docker image build -t image_min . && docker container run -it -e 'PORT=9292' -e 'RACK_ENV=test' -p 9292:9292 --name image_min --rm image_min
 ```
 
-> ⚠️ Caveats: sometimes delays testing depends on your machine's current workload therefore some tests could fail with `execution expired` message. In this case — just restart the tests.
+> ⚠️ Caveats: sometimes delays testing depends on your machine's workload therefore some tests could fail with `execution expired` message. In this case — just restart the tests.
+
+> ℹ️ Dev note: in case we need to test our own related gem the easiest way is to add it as a local dependency in Gemfile: `gem 'network_utils', path: './network_utils'`and `ADD ./network_utils /app/network_utils` in Dockerfile
 
 ## Heroku support
 
@@ -216,16 +218,16 @@ All the files needed for this feature to work, already build into the project (s
 
 ## Known Issues
 
-* [ImgeOptim gem](https://github.com/toy/image_optim) produces children processes (binary compressors) and since the lib itself currently has no compression timeouts we have to set our own timeouts from the outside. Therefore, when interrupting the execution of the compression method, we produce ZN-stat marked processes (zombies) each of which consumes 1 thread, which could become quite an issue on serivices like Heroku where we have limited thread pool ([512 available on Heroku for standard-2x Dynos](https://devcenter.heroku.com/articles/limits#processes-threads)). While the [issue](https://github.com/toy/image_optim/pull/149) is being solved with the PR on the official repository we're doing our best to avoid full thread-pool consuming:
+* [ImgeOptim gem](https://github.com/toy/image_optim) produces children processes (binary compressors) and since the lib itself at the moment has no compression timeouts we have to set our own timeouts from the outside. Therefore, when interrupting the execution of the compression method, we produce ZN-stat marked processes (zombies) each of which consumes 1 thread, which could become an issue on serivices like Heroku where we have limited thread pool ([512 available on Heroku for standard-2x Dynos](https://devcenter.heroku.com/articles/limits#processes-threads)). While the [issue](https://github.com/toy/image_optim/pull/149) is being solved with the PR on the official repository we're doing our best to avoid full thread-pool consuming:
 	- Implementing a middleware which, using system calls, detects/counts and kills zombie parent workers (with SIGTERM - 15) for a fraction (about 1%) of requests and consequently lets Puma master process to restart killed cluster members (for configuration see `ZOMBIES_KILLING_RATE`, `ZOMBIES_MAX_POPULATION` environment variables)
 
-* Quite often REST spects fail due to the execution timeouts. If it occures again and again on your local machine, try to execute test suite against the Docker version of the app. **BTW**: running tests with Docker you ain't gonna get 100% coverage, cause the line where the test server gets started won't be executed.
+* Often REST specs fail due to the execution timeouts. If it occures again and again on your local machine, try to execute test suite against the Docker version of the app. **BTW**: running tests with Docker you ain't gonna get 100% coverage, cause the line where the test server gets started won't be executed.
 
 ## ToDo / Features
 
 - [x] Optimise vendor images on the fly and transparently serve the compressed versions
 - [x] Resolve symmetrically ciphered URLs (for cross-project usage with the same keys/ivs) into original image URLs
-- [x] Dev endpoint to generate URLs with current key/iv settings
+- [x] Dev endpoint to generate URLs with the given key/iv settings
 - [x] Heartbeat / Status endpoint to minitor service availability
 - [x] Provide ENV configuration options and Optimisation Workers config file
 - [x] Memoisation to save on cipher/decipher process for processed URLs

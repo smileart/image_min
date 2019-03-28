@@ -1,4 +1,4 @@
-FROM ruby:2.4.1
+FROM ruby:2.6.2-stretch
 
 # RUN apk --update --upgrade add build-base
 RUN apt-get update && apt-get install -y curl openssh-server
@@ -7,6 +7,7 @@ RUN mkdir /app
 WORKDIR /app
 
 ADD Gemfile Gemfile.lock /app/
+
 RUN bundle install
 
 ADD . /app

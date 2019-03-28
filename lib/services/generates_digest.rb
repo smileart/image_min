@@ -30,7 +30,7 @@ end
 
 # Light Service Action to encrypt original URL
 class EncryptsUrlAction
-  extend AppHepler
+  extend AppHelper
   extend LightService::Action
 
   expects :req, :resp

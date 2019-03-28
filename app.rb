@@ -8,7 +8,7 @@ require_relative './lib/services/generates_digest'
 
 # REST interface for image compression service
 class ImageMin < Roda
-  include AppHepler
+  include AppHelper
 
   plugin :heartbeat, path: '/status'
   plugin :halt

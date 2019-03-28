@@ -44,7 +44,7 @@ describe CompressesImage do
     it 'decrypts given URI' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(encrypted_uri: encrypted_uri)
+                                                     .with(encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
@@ -55,7 +55,7 @@ describe CompressesImage do
     it 'ignores fake file extension in base64 digest' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(encrypted_uri: encrypted_uri_with_extension)
+                                                     .with(encrypted_uri_with_extension, fake_response)
 
       result = described_class.execute(context)
 
@@ -66,7 +66,7 @@ describe CompressesImage do
     it 'fails on wrong base64' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(encrypted_uri: wrong_encrypted_uri)
+                                                     .with(wrong_encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
@@ -78,7 +78,7 @@ describe CompressesImage do
     it 'validates given original URI' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(original_uri: original_uri, encrypted_uri: encrypted_uri)
+                                                     .with(encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
@@ -89,10 +89,7 @@ describe CompressesImage do
     it 'fails on invalid URI' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(
-                                                       original_uri: invalid_uri,
-                                                       encrypted_uri: invalid_encrypted_uri
-                                                     )
+                                                     .with(invalid_uri, invalid_encrypted_uri)
 
       result = described_class.execute(context)
 
@@ -104,13 +101,13 @@ describe CompressesImage do
     it 'compresses image by URL', vcr: true do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(original_uri: original_uri, encrypted_uri: encrypted_uri)
+                                                     .with(encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
       expect(result).to be_success
 
-      expect(result[:raw_data].length).to eq(34_225)
+      expect(result[:raw_data].length).to eq(33_910)
 
       expect(result[:stats][:compression_rate]).to be > 3
       expect(result[:stats][:compression_time]).to be > 0
@@ -120,10 +117,7 @@ describe CompressesImage do
     it 'fails on wrong image format', vcr: true do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(
-                                                       original_uri: non_image_uri,
-                                                       encrypted_uri: non_image_encrypted_uri
-                                                     )
+                                                     .with(non_image_uri, non_image_encrypted_uri)
 
       result = described_class.execute(context)
 
@@ -135,11 +129,7 @@ describe CompressesImage do
     it 'prepares correct headers to respond with' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(
-                                                       original_uri: original_uri,
-                                                       encrypted_uri: encrypted_uri,
-                                                       resp: fake_response
-                                                     )
+                                                     .with(encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
@@ -147,7 +137,7 @@ describe CompressesImage do
       expect(fake_response).to have_received(:'status=').with(200)
       expect(fake_response).to have_received(:headers).with(
         'Content-Type'   => 'image/jpeg',
-        'Content-Length' => '34225',
+        'Content-Length' => '33910',
         'Cache-Control'  => 'public, max-age=14400'
       )
     end
@@ -157,11 +147,7 @@ describe CompressesImage do
     it 'responses with raw binary compressed data' do
       context = LightService::Testing::ContextFactory.make_from(CompressesImage)
                                                      .for(described_class)
-                                                     .with(
-                                                       original_uri: original_uri,
-                                                       encrypted_uri: encrypted_uri,
-                                                       resp: fake_response
-                                                     )
+                                                     .with(encrypted_uri, fake_response)
 
       result = described_class.execute(context)
 
