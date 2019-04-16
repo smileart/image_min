@@ -122,12 +122,12 @@ docker container run -it -e 'PORT=9292' -e 'RACK_ENV=TEST' -p 9292:9292 --name i
 * Heroku usage and deployment:
 
 ```sh
-heroku git:remote -r productrion -a image-min-productrion # add remote app (name could differ)
-heroku plugins:install heroku-container-registry          # install Docker registry plugin
-heroku registry:login                                     # login to Heroku Docker images registry
-heroku container:push web                                 # deploy builded image to the registry and run a container
-heroku logs -t                                            # tail app's logs
-heroku config:set SITE=image-min.herokuapp.com            # configure ENV vars (SITE here used is for example puroses only)
+heroku git:remote -r productrion -a image-min-productrion    # add remote app (name could differ)
+heroku plugins:install @heroku-cli/plugin-container-registry # install Docker registry plugin
+heroku registry:login                                        # login to Heroku Docker images registry
+heroku container:push web                                    # deploy builded image to the registry and run a container
+heroku logs -t                                               # tail app's logs
+heroku config:set SITE=image-min.herokuapp.com               # configure ENV vars (SITE here used is for example puroses only)
 ```
 
 * As for a developer there's not much to mess around with. But in case of developemnt-mode manual testing you may want to generate sample URL's. For this exact purpose the service provides a dedicated endpoint `/secret`. Send there a `Form URL-Encoded` POST request:
@@ -240,8 +240,8 @@ services:
       SECRET_TOKEN: alicebobalicebobalicebobalice
       … … …
 volumes:
-	data:
-	redis:
+  data:
+  redis:
 ``` 
 
 ## Testing
